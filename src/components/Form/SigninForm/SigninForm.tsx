@@ -17,6 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { signInAction } from "@/actions/auth-actions";
+
 /**
  * The form schema validation schema.
  */
@@ -41,17 +43,27 @@ export default function SigninForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "arashmad.dev@gmail.com",
+      password: "12345678",
     },
   });
 
   /**
-   * Called when the form is submitted.
-   * @param values - The values of the form input elements.
+   * Handles form submission.
+   * This function is triggered when the form is submitted. It takes the form data,
+   * retrieves the email and password, and calls the sign-in action.
+   *
+   * @param formData - The validated values from the form input fields.
    */
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(formData: z.infer<typeof formSchema>) {
+    // Call the sign-in action with the extracted email and password
+    const result = await signInAction(formData);
+    if ("message" in result) {
+      // Manage Token and redirect to the map page
+      form.setError("root.apiError", { message: result.message });
+    } else {
+      // Show error message
+    }
   }
 
   return (
@@ -89,7 +101,16 @@ export default function SigninForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Login</Button>
+        <Button type="submit" className="w-full">
+          Sign In
+        </Button>
+
+        {form.formState.errors.root?.apiError && (
+          <div className="flex justify-center text-red-500 text-sm italic">
+            {form.formState.errors.root?.apiError.message ||
+              "Unknown Error by UI"}
+          </div>
+        )}
       </form>
     </Form>
   );
