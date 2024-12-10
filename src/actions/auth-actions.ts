@@ -60,26 +60,30 @@ type ISignActionResult = ISignInResult | ISignInError;
 export async function signInAction(
   param: ILoginRequest
 ): Promise<ISignActionResult> {
-  const { email, password } = param;
+  try {
+    const { email, password } = param;
 
-  // Construct the request to the API
-  const response = await fetch(`${authAPI.base}${authAPI.subRoutes.login}`, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    // Send the email and password in the request body
-    body: JSON.stringify({ email, password }),
-  });
+    // Construct the request to the API
+    const response = await fetch(`${authAPI.base}${authAPI.subRoutes.login}`, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      // Send the email and password in the request body
+      body: JSON.stringify({ email, password }),
+    });
 
-  // Get the response data
-  const data = await response.json();
+    // Get the response data
+    const data = await response.json();
 
-  // Return the response object
-  return response.status !== 200
-    ? // If the response is not 200 OK, return an object with an error message
-      { message: getErrorMessageHelper(data) }
-    : // If the response is 200 OK, return an object with the user's information
-      { user: data };
+    // Return the response object
+    return response.status !== 200
+      ? // If the response is not 200 OK, return an object with an error message
+        { message: data.msg }
+      : // If the response is 200 OK, return an object with the user's information
+        { user: data };
+  } catch (error) {
+    return { message: getErrorMessageHelper(error) };
+  }
 }
