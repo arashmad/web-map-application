@@ -45,6 +45,16 @@ interface ISignInError {
   message: string;
 }
 
+/**
+ * Server action to handle sign in.
+ *
+ * Makes a POST request to the server's login endpoint with the user's email and password.
+ * If the request is successful, it saves the access token as a cookie and returns the user data.
+ * If the request fails, it returns an error message.
+ *
+ * @param param - The data needed for the login request.
+ * @returns A promise that resolves to an object with the user data, or an object with an error message.
+ */
 export async function signInAction(
   param: ILoginRequest
 ): Promise<ISignInResult | ISignInError> {
