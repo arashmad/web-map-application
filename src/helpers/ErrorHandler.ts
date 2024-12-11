@@ -1,3 +1,8 @@
+/**
+ * Returns error message based on the error type.
+ * @param {unknown} error - The error object of type `unknown`.
+ * @returns {string} Error message of type `string`.
+ */
 export const getErrorMessageHelper = (error: unknown): string => {
   debugger;
   let errorMessage = "";
