@@ -59,10 +59,7 @@ export default function SigninForm() {
     // Call the sign-in action with the extracted email and password
     const result = await signInAction(formData);
     if ("message" in result) {
-      // Manage Token and redirect to the map page
       form.setError("root.apiError", { message: result.message });
-    } else {
-      // Show error message
     }
   }
 
