@@ -1,10 +1,12 @@
 // A client component
 "use client";
 
+/* From third-party libraries */
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+/* Custom Components */
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,7 +42,9 @@ const formSchema = z.object({
  * Utilizes react-hook-form for form state management and validation with Zod.
  * On form submission, the input values are logged to the console.
  */
-export default function SigninForm() {
+const SigninForm: React.FC<{ authorized: (status: boolean) => void }> = ({
+  authorized,
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,11 +61,12 @@ export default function SigninForm() {
    * @param formData - The validated values from the form input fields.
    */
   async function onSubmit(formData: z.infer<typeof formSchema>) {
-    // Call the sign-in action with the extracted email and password
     const result = await signInAction(formData);
     if ("message" in result) {
       form.setError("root.apiError", { message: result.message });
+      return;
     }
+    authorized("user" in result ? true : false);
   }
 
   return (
@@ -112,4 +117,6 @@ export default function SigninForm() {
       </form>
     </Form>
   );
-}
+};
+
+export default SigninForm;
