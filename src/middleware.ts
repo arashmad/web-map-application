@@ -8,7 +8,6 @@ import {
 } from "./actions/auth-actions";
 
 export async function middleware(req: NextRequest) {
-  console.log("middleware checking session cookies");
   const access_token = req.cookies.get("access_token")?.value;
   const refresh_token = req.cookies.get("refresh_token")?.value;
 
@@ -16,7 +15,7 @@ export async function middleware(req: NextRequest) {
    * Return to the sign-in page if session cookies are not found
    */
   if (!access_token || !refresh_token) {
-    console.log("No session cookies found");
+    console.log("-> No session cookies found");
     return NextResponse.redirect(new URL("/signin", req.url));
   }
 
@@ -26,6 +25,13 @@ export async function middleware(req: NextRequest) {
   const validateTokenActionRes = await validateTokenAction(access_token);
 
   if ("message" in validateTokenActionRes) {
+    const validateTokenResponseErrorMessage = validateTokenActionRes.message;
+
+    console.log("-> ", validateTokenResponseErrorMessage);
+
+    if (validateTokenResponseErrorMessage.indexOf("invalid") >= 0) {
+      return NextResponse.redirect(new URL("/signin", req.url));
+    }
     // Check message to see the problem
     // Invalid access token -> return to the sign-in page
     // Expired access token -> generate a new access-token using refresh-token
@@ -38,9 +44,13 @@ export async function middleware(req: NextRequest) {
     }
   }
 
+  // If user is already logged in -> redirect to /map
+  if (req.nextUrl.pathname === "/signin")
+    return NextResponse.redirect(new URL("/map", req.url));
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/map/:path*"],
+  matcher: ["/signin", "/map/:path*"],
 };
