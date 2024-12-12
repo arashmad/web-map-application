@@ -1,48 +1,78 @@
-// A server action
+// Containing server actions for the user authentication
 "use server";
 
 import { authAPI } from "./api";
 
+/* Types */
+import {
+  IValidateTokenResponse,
+  ILoginRequest,
+  ILoginResponse,
+} from "./schema/auth-schema";
+
 /* Helper Functions */
 import { getErrorMessageHelper, saveSession } from "@/helpers";
 
-/**
- * Interface for the login request data.
- *
- * Represents the data sent to the server to authenticate a user.
- */
-interface ILoginRequest {
-  /** The email address of the user. */
-  email: string;
-
-  /** The password of the user. */
-  password: string;
-}
-
-/**
- * Interface for the login response data.
- *
- * Represents the data returned by the server after a successful login.
- */
-interface ILoginResponse {
-  /** The access token for the authenticated user. */
-  access_token: string;
-  /** The refresh token for the authenticated user. */
-  refresh_token: string;
-  /** The unique ID of the authenticated user. */
-  user_id: string;
-  /** Indicates whether the authenticated user is an administrator. */
-  is_admin: boolean;
-  /** An array of services that the authenticated user has access to.*/
-  services: string[];
-}
-
-interface ISignInResult {
-  user: ILoginResponse;
-}
-
-interface ISignInError {
+interface IResponseError {
   message: string;
+}
+
+/**
+ * Server action to validate ACCESS_TOKEN.
+ *
+ * Makes a GET request to the server's validate-token endpoint with the ACCESS_TOKEN.
+ * If the request is successful, it returns the user data.
+ * If the request fails, it returns an error message.
+ *
+ * @param {string} token - The ACCESS_TOKEN to validate.
+ * @returns A promise that resolves to an object with the user data, or an object with an error message.
+ */
+export async function validateTokenAction(
+  token: string
+): Promise<{ user: IValidateTokenResponse } | IResponseError> {
+  try {
+    const response = await fetch(
+      `${authAPI.base}${authAPI.subRoutes.validate}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.status !== 200) return { message: data.msg };
+    return { user: data };
+  } catch (error) {
+    return { message: getErrorMessageHelper(error) };
+  }
+}
+
+export async function refreshTokenAction(
+  token: string
+): Promise<{ access_token: string } | IResponseError> {
+  try {
+    const response = await fetch(
+      `${authAPI.base}${authAPI.subRoutes.refresh}`,
+      {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ refresh_token: token }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.status !== 200) return { message: data.msg };
+    return { access_token: data.access_token };
+  } catch (error) {
+    return { message: getErrorMessageHelper(error) };
+  }
 }
 
 /**
@@ -57,7 +87,7 @@ interface ISignInError {
  */
 export async function signInAction(
   param: ILoginRequest
-): Promise<ISignInResult | ISignInError> {
+): Promise<{ user: ILoginResponse } | IResponseError> {
   try {
     const { email, password } = param;
 
@@ -76,7 +106,6 @@ export async function signInAction(
 
     // Save access token as a cookie
     await saveSession(data.access_token, data.refresh_token);
-
     return { user: data };
   } catch (error) {
     return { message: getErrorMessageHelper(error) };
