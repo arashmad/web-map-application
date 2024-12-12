@@ -4,6 +4,8 @@ const authAPI = {
     register: "/register",
     login: "/login",
     logout: "/logout",
+    validate: "/validate-token",
+    refresh: "/refresh-token",
   },
 };
 
