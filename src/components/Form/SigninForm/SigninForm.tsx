@@ -1,10 +1,12 @@
 // A client component
 "use client";
 
+/* From third-party libraries */
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+/* Custom Components */
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +18,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
+/* Server Actions */
+import { signInAction } from "@/actions/auth-actions";
 
 /**
  * The form schema validation schema.
@@ -37,21 +42,31 @@ const formSchema = z.object({
  * Utilizes react-hook-form for form state management and validation with Zod.
  * On form submission, the input values are logged to the console.
  */
-export default function SigninForm() {
+const SigninForm: React.FC<{ authorized: (status: boolean) => void }> = ({
+  authorized,
+}) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "arashmad.dev@gmail.com",
+      password: "12345678",
     },
   });
 
   /**
-   * Called when the form is submitted.
-   * @param values - The values of the form input elements.
+   * Handles form submission.
+   * This function is triggered when the form is submitted. It takes the form data,
+   * retrieves the email and password, and calls the sign-in action.
+   *
+   * @param formData - The validated values from the form input fields.
    */
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  async function onSubmit(formData: z.infer<typeof formSchema>) {
+    const result = await signInAction(formData);
+    if ("message" in result) {
+      form.setError("root.apiError", { message: result.message });
+      return;
+    }
+    authorized("user" in result ? true : false);
   }
 
   return (
@@ -89,8 +104,19 @@ export default function SigninForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Login</Button>
+        <Button type="submit" className="w-full">
+          Sign In
+        </Button>
+
+        {form.formState.errors.root?.apiError && (
+          <div className="flex justify-center text-red-500 text-sm italic">
+            {form.formState.errors.root?.apiError.message ||
+              "Unknown Error by UI"}
+          </div>
+        )}
       </form>
     </Form>
   );
-}
+};
+
+export default SigninForm;
