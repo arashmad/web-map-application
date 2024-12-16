@@ -10,7 +10,6 @@ export default function SinginPage() {
   const router = useRouter();
 
   const onNavigateTo = (status: boolean) => {
-    debugger;
     if (status) {
       router.push("/map");
     }
