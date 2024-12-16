@@ -50,6 +50,17 @@ export async function validateTokenAction(
   }
 }
 
+/**
+ * Server action to refresh the access token.
+ *
+ * Makes a POST request to the server's refresh-token endpoint with the refresh token.
+ * If the request is successful, it saves the new access token and refresh token as cookies
+ * and returns the new access token.
+ * If the request fails, it returns an error message.
+ *
+ * @param {string} token - The refresh token used to obtain a new access token.
+ * @returns A promise that resolves to an object with the new access token, or an object with an error message.
+ */
 export async function refreshTokenAction(
   token: string
 ): Promise<{ access_token: string } | IResponseError> {
