@@ -69,6 +69,8 @@ export async function refreshTokenAction(
     const data = await response.json();
 
     if (response.status !== 200) return { message: data.msg };
+
+    await saveSession(data.access_token, data.refresh_token);
     return { access_token: data.access_token };
   } catch (error) {
     return { message: getErrorMessageHelper(error) };
