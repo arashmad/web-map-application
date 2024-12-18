@@ -58,30 +58,52 @@ export const createMap = (params: {
     });
   });
 
-  // const controls = defaultControls({
-  //   attribution: showAttribution,
-  //   zoom: showZoom,
-  // });
+  const controls = defaultControls({
+    attribution: showAttribution,
+    zoom: showZoom,
+  });
 
-  // if (showScaleBar) {
-  //   controls.extend([
-  //     new ScaleLine({
-  //       units: "metric",
-  //       bar: true,
-  //       steps: parseInt("4", 10),
-  //       text: true,
-  //       minWidth: 140,
-  //     }),
-  //   ]);
-  // }
+  if (showScaleBar) {
+    controls.extend([
+      new ScaleLine({
+        units: "metric",
+        bar: true,
+        steps: parseInt("4", 10),
+        text: true,
+        minWidth: 140,
+      }),
+    ]);
+  }
 
-  return new Map({
+  const map = new Map({
     target: "ol-map-container",
     view: new View({
       zoom: zoom,
       center: [center.x, center.y],
     }),
     layers: layerGroup,
-    // controls: controls,
+    controls: controls,
   });
+
+  // Helps to see groups and layers
+  map.on("click", () => {
+    map
+      .getLayers()
+      .getArray()
+      .map((layerGr) => {
+        if (layerGr instanceof LayerGroup) {
+          console.log("");
+          console.log("Group :", layerGr.get("id"));
+          console.log("Layers :");
+          layerGr
+            .getLayers()
+            .getArray()
+            .map((lyr) => {
+              console.log(lyr.get("id"));
+            });
+        }
+      });
+  });
+
+  return map;
 };

@@ -1,7 +1,7 @@
 "use client";
 
 /* Custom Components */
-import { Map, Group, Layer, Toolbox, LayerList } from "@/components/Map";
+import { Map, Toolbox } from "@/components/Map";
 
 /* Stores */
 import useMapStore from "@/store/mapStore";
@@ -31,9 +31,9 @@ export default function MapPage() {
           zoom={mapInitiateZoom}
           center={mapInitiateCenter}
           dataLayer={mapInitiateLayerGroups}
-          options={{}}
+          options={{ zoomControl: false, scaleBar: false, attribute: false }}
         >
-          <></>
+          {/* <Toolbox zoomIn={mapZoomIn} zoomOut={mapZoomOut} /> */}
         </Map>
       </main>
       <footer className="flex justify-between px-2 py-1 bg-slate-100">

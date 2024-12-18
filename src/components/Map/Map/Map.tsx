@@ -7,9 +7,6 @@ import "./Map.css";
 /* Import from React */
 import React, { useRef, useEffect } from "react";
 
-/* Import from ol */
-import { defaults as defaultControls, ScaleLine } from "ol/control";
-
 /* Import Context Managers */
 import useMapStore from "@/store/mapStore";
 
@@ -60,8 +57,6 @@ const Map: React.FC<IMap> = ({
 
   const mapRef = useRef<HTMLDivElement | null>(null);
 
-  // const { x, y } = center;
-
   /**
    * Options that ol.Map supports
    */
@@ -72,22 +67,6 @@ const Map: React.FC<IMap> = ({
   const showScaleBar =
     typeof options.scaleBar === "undefined" ? true : options.scaleBar;
 
-  const mapControl = defaultControls({
-    attribution: showAttribute,
-    zoom: showZoomControl,
-  });
-
-  if (showScaleBar)
-    mapControl.extend([
-      new ScaleLine({
-        units: "metric",
-        bar: true,
-        steps: parseInt("4", 10),
-        text: true,
-        minWidth: 140,
-      }),
-    ]);
-
   /**
    * Create an empty ol.Map instance
    */
@@ -96,43 +75,11 @@ const Map: React.FC<IMap> = ({
       zoom,
       center,
       dataLayer: dataLayer,
+      showAttribution: showAttribute,
+      showZoom: showZoomControl,
+      showScaleBar: showScaleBar,
     });
 
-    // const options = {
-    //   view: new View({ zoom, center: [x, y] }),
-    //   // layers: [
-    //   //   new TileLayer({
-    //   //     source: new OSM(),
-    //   //   }),
-    //   // ],
-    //   layers: [],
-    //   overlays: [],
-    //   controls: mapControl,
-    // };
-
-    // const map = new OlMap(options);
-
-    // Helps to see groups and layers
-    // mapObject.on("click", () => {
-    //   mapObject
-    //     .getLayers()
-    //     .getArray()
-    //     .map((layerGr) => {
-    //       if (layerGr instanceof Group) {
-    //         console.log("");
-    //         console.log("Group :", layerGr.get("id"));
-    //         console.log("Layers :");
-    //         layerGr
-    //           .getLayers()
-    //           .getArray()
-    //           .map((lyr) => {
-    //             console.log(lyr.get("id"));
-    //           });
-    //       }
-    //     });
-    // });
-
-    // debugger;
     mapRef.current && map.setTarget(mapRef.current);
     mapCtxInitialize(map);
 
@@ -148,32 +95,6 @@ const Map: React.FC<IMap> = ({
       {children}
     </div>
   );
-
-  // useEffect(() => {
-  //   const map = new OlMap({
-  //     layers: [
-  //       new TileLayer({
-  //         source: new OSM(),
-  //       }),
-  //     ],
-  //     view: new View({
-  //       //Coordinate System: WGS 84 / Pseudo-Mercator-EPSG:3857
-  //       center: [8546575.886939, 2137169.681579], // Longitude, Latitude
-  //       zoom: 6,
-  //     }),
-  //   });
-
-  //   mapRef.current && map.setTarget(mapRef.current);
-  //   // on component unmount remove the map refrences to avoid unexpected behaviour
-  //   return () => {
-  //     map.setTarget(undefined);
-  //   };
-  // }, []);
-  // return (
-  //   <>
-  //     <div ref={mapRef} className="absolute inset-0"></div>
-  //   </>
-  // );
 };
 
 export default Map;
