@@ -1,0 +1,203 @@
+import "./LayerList.css";
+
+import { useState } from "react";
+import { Row, Col } from "react-bootstrap";
+
+import IconButton from "../../main/IconButton";
+
+import {
+  ILayerListItemSingleSymbol,
+  ILayerListItemClassifiedSymbols,
+} from "./specification/interfaces";
+import LayerListItemClassifiedSymbols from "./LayerListItemClassifiedSymbols";
+
+/**
+ * ILayerListItem component props template
+ * @param {string} type layer input type either radio button or checkbox
+ * @param {string} name layer name
+ * @param {string} label label to show as label on list item
+ * @param {boolean} active true if the layer is switched on otherwise is false
+ * @param {boolean} valid true if layer source (hosted file or link) is valid and data is rendered
+ * @param {boolean} displayLegend displays layer symbols if true otherwise doesn't display
+ * @param {} legend object of data to provide symbols
+ * @param {boolean} externalLink displays layer external link for the 3rd party apps if true otherwise doesn't display
+ * @param {} onToggleLayer handle toggling layer on/off in list
+ * @param {} onClickExternalLink handle clicking on external link
+ */
+interface ILayerListItem {
+  type: "radio" | "checkbox";
+  name: string;
+  label: string;
+  active: boolean;
+  valid?: boolean;
+  legendObject?: ILayerListItemSingleSymbol | ILayerListItemClassifiedSymbols;
+  displayLegend?: boolean;
+  externalLink?: boolean;
+  onToggleLayer: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClickExternalLink?: (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    layerName: string
+  ) => void;
+}
+
+const LayerListItem: React.FC<ILayerListItem> = (props) => {
+  const {
+    type,
+    name,
+    label,
+    active,
+    valid,
+    externalLink,
+    displayLegend,
+    legendObject,
+    onToggleLayer,
+    onClickExternalLink,
+  } = props;
+
+  const [showLegendPanel, setShowLegendPanel] = useState(false);
+
+  const _valid = typeof valid === "undefined" ? true : valid;
+
+  /**
+   * Show embedded error message in component when legend object is undefined
+   */
+  if (displayLegend && !legendObject) {
+    return <span>Trying to display legend but legend info is empty!</span>;
+  }
+
+  /**
+   * Check to see if the legend object is for a single symbol
+   */
+  const isTypeOfSingleSymbol = (
+    value:
+      | ILayerListItemSingleSymbol
+      | ILayerListItemClassifiedSymbols
+      | undefined
+  ): value is ILayerListItemSingleSymbol => {
+    return value && "color" in value ? true : false;
+  };
+
+  /**
+   * Check to see if the legend object is for classified symbols
+   */
+  const isTypeOfClassifiedSymbols = (
+    value:
+      | ILayerListItemSingleSymbol
+      | ILayerListItemClassifiedSymbols
+      | undefined
+  ): value is ILayerListItemClassifiedSymbols => {
+    return value && "colors" in value && "labels" in value ? true : false;
+  };
+
+  /**
+   * Show embedded error message in component when legend object cannot be recognized
+   */
+  if (displayLegend) {
+    if (
+      !isTypeOfSingleSymbol(legendObject) &&
+      !isTypeOfClassifiedSymbols(legendObject)
+    ) {
+      return (
+        <span>
+          Trying to display legend but cannot find type of the legend oject!
+        </span>
+      );
+    }
+  }
+
+  /**
+   * Toggle legend on/off
+   */
+  const toggleLegend = () => {
+    setShowLegendPanel(!showLegendPanel);
+  };
+
+  return (
+    <>
+      <div className="inner">
+        <Row>
+          <Col sm={1}>
+            <input
+              type={type}
+              value={name}
+              onChange={onToggleLayer}
+              checked={active}
+              disabled={!_valid}
+            />
+          </Col>
+          <Col>
+            <span>{label}</span>
+          </Col>
+        </Row>
+        {displayLegend || externalLink ? (
+          <div className="second">
+            <>
+              {displayLegend ? (
+                <IconButton
+                  name={showLegendPanel ? "mdi-chevron-up" : "mdi-chevron-down"}
+                  size="sm"
+                  helper={
+                    showLegendPanel ? "Close legend panel" : "Open legend panel"
+                  }
+                  onClick={toggleLegend}
+                />
+              ) : (
+                <></>
+              )}
+            </>
+            <>
+              {_valid ? (
+                externalLink ? (
+                  <IconButton
+                    name="mdi-earth"
+                    size="sm"
+                    helper="Show external link"
+                    onClick={
+                      onClickExternalLink
+                        ? (e) => onClickExternalLink(e, name)
+                        : () => {}
+                    }
+                  />
+                ) : (
+                  <></>
+                )
+              ) : (
+                <IconButton
+                  name="mdi-close-circle"
+                  size="sm"
+                  helper="Dataset is empty!"
+                  color="error"
+                  disabled={true}
+                  onClick={() => {}}
+                />
+              )}
+            </>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+      <>
+        {isTypeOfClassifiedSymbols(legendObject) ? (
+          <>
+            <div
+              className="layer-group-item-legend-panel"
+              style={
+                showLegendPanel ? { display: "block" } : { display: "none" }
+              }
+            >
+              <LayerListItemClassifiedSymbols
+                colors={legendObject?.colors}
+                labels={legendObject?.labels}
+              />
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+      </>
+    </>
+  );
+};
+
+export default LayerListItem;

@@ -1,0 +1,79 @@
+.layer-list-container {
+  width: 250px;
+  height: auto;
+  padding: 0px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 1000;
+}
+
+.layer-list-group {
+  margin-bottom: 4px;
+}
+
+.layer-list-group .title {
+  margin: 0;
+  padding: 2px 0;
+  font-size: 14px;
+  text-align: center;
+  background-color: #ccc;
+}
+
+.layer-list-group .body {
+  padding: 0 4px;
+  line-height: 20px;
+  /* overflow-y: scroll;
+  max-height: 187px; */
+}
+
+.layer-list-group .body .inner {
+  display: flex;
+  justify-content: space-between;
+}
+
+.layer-list-group .body .inner .first {
+  display: flex;
+  gap: 4px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.layer-list-group .body .inner .second {
+  display: flex;
+}
+
+.layer-group-item-legend-panel {
+  padding: 4px 8px;
+  overflow: hidden;
+  border-bottom: 1px solid #ccc;
+  background-color: #f0f0f0;
+  /* border-width: 0px 1px 1px;
+  border-color: #ccc;
+  border-style: solid; */
+}
+
+.layer-group-item-legend-panel .legend-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.layer-group-item-legend-panel .legend-row .label {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+}
+
+.layer-group-item-legend-panel .legend-row .symbol {
+  font-size: 13px;
+}
+
+.font-size-xs {
+  font-size: 13px;
+}
+
+.font-size-xxs {
+  font-size: 12px;
+}
