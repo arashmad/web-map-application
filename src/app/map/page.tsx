@@ -26,14 +26,16 @@ export default function MapPage() {
         <div className="text-sm">Settings</div>
       </header>
       {/* Here is the map */}
-      <main className="h-[calc(100vh-56px)]">
+      <main className="h-[calc(100vh-56px)] relative overflow-hidden">
         <Map
           zoom={mapInitiateZoom}
           center={mapInitiateCenter}
           dataLayer={mapInitiateLayerGroups}
           options={{ zoomControl: false, scaleBar: false, attribute: false }}
         >
-          <Toolbox zoomIn={mapZoomIn} zoomOut={mapZoomOut} />
+          <div className="absolute top-2 left-2 z-10">
+            <Toolbox zoomIn={mapZoomIn} zoomOut={mapZoomOut} />
+          </div>
         </Map>
       </main>
       <footer className="flex justify-between px-2 py-1 bg-slate-100">
