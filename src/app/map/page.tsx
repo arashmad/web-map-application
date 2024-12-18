@@ -33,7 +33,7 @@ export default function MapPage() {
           dataLayer={mapInitiateLayerGroups}
           options={{ zoomControl: false, scaleBar: false, attribute: false }}
         >
-          {/* <Toolbox zoomIn={mapZoomIn} zoomOut={mapZoomOut} /> */}
+          <Toolbox zoomIn={mapZoomIn} zoomOut={mapZoomOut} />
         </Map>
       </main>
       <footer className="flex justify-between px-2 py-1 bg-slate-100">
