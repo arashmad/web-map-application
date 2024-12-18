@@ -91,7 +91,7 @@ const Map: React.FC<IMap> = ({
   }, []);
 
   return (
-    <div ref={mapRef} className="absolute inset-0" id="ol-map-container">
+    <div ref={mapRef} id="ol-map-container" className="ol-map">
       {children}
     </div>
   );

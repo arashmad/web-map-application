@@ -26,7 +26,7 @@ export default function MapPage() {
         <div className="text-sm">Settings</div>
       </header>
       {/* Here is the map */}
-      <main className="flex-1 overflow-hidden">
+      <main className="h-[calc(100vh-56px)]">
         <Map
           zoom={mapInitiateZoom}
           center={mapInitiateCenter}
