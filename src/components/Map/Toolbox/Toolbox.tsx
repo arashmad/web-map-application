@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, SquareDashed } from "lucide-react";
 
 /**
  * Component Interface.
@@ -9,29 +9,40 @@ import { Minus, Plus } from "lucide-react";
 interface IToolbox {
   zoomIn: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   zoomOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  drawPolygon: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 /**
  * Component Body.
  */
 const Toolbox: React.FC<IToolbox> = (props) => {
-  const { zoomIn, zoomOut } = props;
+  const { zoomIn, zoomOut, drawPolygon } = props;
 
   return (
     <div className="flex flex-col gap-1">
       <Button
-        className="bg-[var(--color-light-blue)]"
         size="icon"
+        title="Zoom In"
+        className="bg-slate-400 text-black"
         onClick={zoomIn}
       >
         <Plus />
       </Button>
       <Button
-        className="bg-[var(--color-light-blue)]"
         size="icon"
+        title="Zoom Out"
+        className="bg-slate-400 text-black"
         onClick={zoomOut}
       >
         <Minus />
+      </Button>
+      <Button
+        size="icon"
+        title="Draw Polygon"
+        className="bg-slate-400 text-black"
+        onClick={drawPolygon}
+      >
+        <SquareDashed />
       </Button>
     </div>
   );

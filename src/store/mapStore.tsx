@@ -94,6 +94,7 @@ interface MapStoreInterface {
   /* Map interaction functions */
   mapZoomIn: () => void;
   mapZoomOut: () => void;
+  drawPolygon: () => void;
 }
 
 const useMapStore = create<MapStoreInterface>((set) => ({
@@ -136,6 +137,12 @@ const useMapStore = create<MapStoreInterface>((set) => ({
         });
       return state;
     }),
+
+  /**
+   * Handling drawPolygon interaction
+   */
+
+  drawPolygon: () => {},
 }));
 
 export default useMapStore;

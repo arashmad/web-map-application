@@ -15,6 +15,7 @@ export default function MapPage() {
     mapInitiateLayerGroups,
     mapZoomIn,
     mapZoomOut,
+    drawPolygon,
   } = useMapStore();
 
   return (
@@ -33,8 +34,12 @@ export default function MapPage() {
           dataLayer={mapInitiateLayerGroups}
           options={{ zoomControl: false, scaleBar: false, attribute: false }}
         >
-          <div className="absolute top-2 left-2 z-10">
-            <Toolbox zoomIn={mapZoomIn} zoomOut={mapZoomOut} />
+          <div className="absolute top-4 left-4 z-10">
+            <Toolbox
+              zoomIn={mapZoomIn}
+              zoomOut={mapZoomOut}
+              drawPolygon={drawPolygon}
+            />
           </div>
         </Map>
       </main>
