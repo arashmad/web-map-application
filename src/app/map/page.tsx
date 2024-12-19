@@ -16,6 +16,7 @@ export default function MapPage() {
     mapZoomIn,
     mapZoomOut,
     drawPolygon,
+    pinPoint,
   } = useMapStore();
 
   return (
@@ -39,6 +40,7 @@ export default function MapPage() {
               zoomIn={mapZoomIn}
               zoomOut={mapZoomOut}
               drawPolygon={drawPolygon}
+              pinPoint={pinPoint}
             />
           </div>
         </Map>
