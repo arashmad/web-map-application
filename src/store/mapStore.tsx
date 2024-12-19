@@ -2,14 +2,17 @@
 import { create } from "zustand";
 
 /* Import from ol */
-import { Map } from "ol";
+import { Map, Feature } from "ol";
+import { Draw } from "ol/interaction";
+import { GeoJSON } from "ol/format";
+import { Vector as VectorSource } from "ol/source";
+import { Vector as VectorLayer } from "ol/layer";
 import { fromLonLat } from "ol/proj";
 
 /* Types */
 import { MapTypes, LayerTypes } from "../types";
 
 /* Utils */
-import { createMap } from "@/lib/Map";
 
 /* Initial values for map */
 const mapInitZoom = 13;
@@ -142,7 +145,30 @@ const useMapStore = create<MapStoreInterface>((set) => ({
    * Handling drawPolygon interaction
    */
 
-  drawPolygon: () => {},
+  drawPolygon: () =>
+    set((state) => {
+      const polygon = new Draw({
+        source: new VectorSource({
+          wrapX: false,
+        }),
+        type: "Polygon",
+      });
+
+      polygon.on("drawend", async (e) => {
+        const geom4326 = e.feature
+          ?.getGeometry()
+          ?.clone()
+          ?.transform("EPSG:3857", "EPSG:4326");
+        const aoiGeojson = new GeoJSON().writeFeature(
+          new Feature({ geometry: geom4326 })
+        );
+        console.log(aoiGeojson);
+        // Add layer to map
+      });
+
+      state.mapObject.addInteraction(polygon);
+      return state;
+    }),
 }));
 
 export default useMapStore;
