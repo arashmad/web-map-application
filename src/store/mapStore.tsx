@@ -11,6 +11,12 @@ import { fromLonLat } from "ol/proj";
 
 /* Types */
 import { MapTypes, LayerTypes } from "../types";
+import { createInteractionDraw } from "@/components/Map/utilities/Interactions";
+import {
+  CreatePolygonStyle,
+  createVectorLayer,
+} from "@/components/Map/utilities/VectorLayer";
+import { addLayer } from "@/components/Map/utilities";
 
 /* Utils */
 
@@ -147,26 +153,38 @@ const useMapStore = create<MapStoreInterface>((set) => ({
 
   drawPolygon: () =>
     set((state) => {
-      const polygon = new Draw({
-        source: new VectorSource({
-          wrapX: false,
-        }),
-        type: "Polygon",
-      });
-
-      polygon.on("drawend", async (e) => {
+      const groupName = "user-layers";
+      const polygonDraw = createInteractionDraw("Polygon");
+      polygonDraw.on("drawend", async (e) => {
         const geom4326 = e.feature
           ?.getGeometry()
           ?.clone()
           ?.transform("EPSG:3857", "EPSG:4326");
-        const aoiGeojson = new GeoJSON().writeFeature(
+        const polygon = new GeoJSON().writeFeature(
           new Feature({ geometry: geom4326 })
         );
-        console.log(aoiGeojson);
-        // Add layer to map
+
+        const polygonGeojson = {
+          type: "FeatureCollection",
+          features: [JSON.parse(polygon)],
+        };
+        const polygonVectorLayer = createVectorLayer(
+          "Polygon",
+          polygonGeojson,
+          CreatePolygonStyle(),
+          {
+            name: "polygon",
+            title: "Polygon",
+            groupName: groupName,
+            zIndex: 10,
+            visible: true,
+          }
+        );
+        addLayer(state.mapObject, polygonVectorLayer, groupName);
+        state.mapObject.removeInteraction(polygonDraw);
       });
 
-      state.mapObject.addInteraction(polygon);
+      state.mapObject.addInteraction(polygonDraw);
       return state;
     }),
 }));
