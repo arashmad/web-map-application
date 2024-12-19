@@ -13,6 +13,7 @@ import { fromLonLat } from "ol/proj";
 import { MapTypes, LayerTypes } from "../types";
 import { createInteractionDraw } from "@/components/Map/utilities/Interactions";
 import {
+  CreatePointStyle,
   CreatePolygonStyle,
   createVectorLayer,
 } from "@/components/Map/utilities/VectorLayer";
@@ -104,6 +105,7 @@ interface MapStoreInterface {
   mapZoomIn: () => void;
   mapZoomOut: () => void;
   drawPolygon: () => void;
+  pinPoint: () => void;
 }
 
 const useMapStore = create<MapStoreInterface>((set) => ({
@@ -150,7 +152,6 @@ const useMapStore = create<MapStoreInterface>((set) => ({
   /**
    * Handling drawPolygon interaction
    */
-
   drawPolygon: () =>
     set((state) => {
       const groupName = "user-layers";
@@ -185,6 +186,44 @@ const useMapStore = create<MapStoreInterface>((set) => ({
       });
 
       state.mapObject.addInteraction(polygonDraw);
+      return state;
+    }),
+
+  pinPoint: () =>
+    set((state) => {
+      const groupName = "user-layers";
+      const pointDraw = createInteractionDraw("Point");
+
+      pointDraw.on("drawend", async (e) => {
+        const geom4326 = e.feature
+          ?.getGeometry()
+          ?.clone()
+          ?.transform("EPSG:3857", "EPSG:4326");
+        const point = new GeoJSON().writeFeature(
+          new Feature({ geometry: geom4326 })
+        );
+
+        const pointGeojson = {
+          type: "FeatureCollection",
+          features: [JSON.parse(point)],
+        };
+        const pointVectorLayer = createVectorLayer(
+          "Point",
+          pointGeojson,
+          CreatePointStyle(),
+          {
+            name: "point",
+            title: "Point",
+            groupName: groupName,
+            zIndex: 10,
+            visible: true,
+          }
+        );
+        addLayer(state.mapObject, pointVectorLayer, groupName);
+        state.mapObject.removeInteraction(pointDraw);
+      });
+
+      state.mapObject.addInteraction(pointDraw);
       return state;
     }),
 }));
