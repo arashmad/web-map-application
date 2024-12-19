@@ -6,7 +6,7 @@ import { Vector as VectorSource } from "ol/source";
  * @param {string} type Type of drawing interaction
  */
 
-export type TDraw = "Polygon";
+export type TDraw = "Polygon" | "Point";
 
 export const createInteractionDraw = (type: TDraw): Draw => {
   return new Draw({
