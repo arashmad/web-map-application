@@ -4,9 +4,9 @@ export interface ILayerGroup {
 }
 
 export interface ILayerProperties {
-  id: string;
-  label: string;
-  groupId: string;
+  name: string;
+  title: string;
+  groupName: string;
   zIndex: number;
   visible: boolean;
 }
@@ -93,8 +93,8 @@ export interface IGeoJSONObject {
  */
 export interface IFeature {
   type: string;
-  properties: IProperties;
   geometry: IPointGeometry | IPolygonGeometry;
+  properties?: IProperties;
 }
 
 /**
