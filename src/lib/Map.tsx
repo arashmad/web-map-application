@@ -86,24 +86,24 @@ export const createMap = (params: {
   });
 
   // Helps to see groups and layers
-  map.on("click", () => {
-    map
-      .getLayers()
-      .getArray()
-      .map((layerGr) => {
-        if (layerGr instanceof LayerGroup) {
-          console.log("");
-          console.log("Group :", layerGr.get("id"));
-          console.log("Layers :");
-          layerGr
-            .getLayers()
-            .getArray()
-            .map((lyr) => {
-              console.log(lyr.get("id"));
-            });
-        }
-      });
-  });
+  // map.on("click", () => {
+  //   map
+  //     .getLayers()
+  //     .getArray()
+  //     .map((layerGr) => {
+  //       if (layerGr instanceof LayerGroup) {
+  //         console.log("");
+  //         console.log("Group :", layerGr.get("name"));
+  //         console.log("Layers in there:");
+  //         layerGr
+  //           .getLayers()
+  //           .getArray()
+  //           .map((lyr) => {
+  //             console.log(lyr);
+  //           });
+  //       }
+  //     });
+  // });
 
   return map;
 };
