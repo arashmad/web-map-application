@@ -9,4 +9,11 @@ const authAPI = {
   },
 };
 
-export { authAPI };
+const searchAPI = {
+  base: "https://nominatim.openstreetmap.org",
+  subRoutes: {
+    search: "/search",
+  },
+};
+
+export { authAPI, searchAPI };
