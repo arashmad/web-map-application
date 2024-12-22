@@ -28,11 +28,13 @@ const SearchBar: React.FC<ISearchBar> = (props) => {
   }
 
   return (
-    <Input
-      type="text"
-      placeholder="Input place name"
-      onChange={onChangeHandler}
-    />
+    <div className="bg-slate-100">
+      <Input
+        type="text"
+        placeholder="Input place name"
+        onChange={onChangeHandler}
+      />
+    </div>
   );
 };
 
