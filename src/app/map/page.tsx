@@ -41,6 +41,7 @@ export default function MapPage() {
               zoomOut={mapZoomOut}
               drawPolygon={drawPolygon}
               pinPoint={pinPoint}
+              searchLocation={(loc) => console.log(loc)}
             />
           </div>
         </Map>

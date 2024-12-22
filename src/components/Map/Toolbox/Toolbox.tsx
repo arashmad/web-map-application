@@ -1,7 +1,10 @@
 "use client";
 
+import { GeoJSON } from "ol/format";
+
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, SquareDashed, MapPinPlus } from "lucide-react";
+import SearchBar from "../SearchBar/SearchBar";
 
 /**
  * Component Interface.
@@ -11,16 +14,18 @@ interface IToolbox {
   zoomOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   drawPolygon: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   pinPoint: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  searchLocation: (places: GeoJSON[] | []) => void;
 }
 
 /**
  * Component Body.
  */
 const Toolbox: React.FC<IToolbox> = (props) => {
-  const { zoomIn, zoomOut, drawPolygon, pinPoint } = props;
+  const { zoomIn, zoomOut, drawPolygon, pinPoint, searchLocation } = props;
 
   return (
     <div className="flex flex-col gap-1">
+      <SearchBar onSearchPlace={searchLocation} />
       <Button
         size="icon"
         title="Zoom In"
