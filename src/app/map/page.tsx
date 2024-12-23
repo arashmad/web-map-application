@@ -1,7 +1,7 @@
 "use client";
 
 /* Custom Components */
-import { Map, Group, Layer, Toolbox, LayerList } from "@/components/Map";
+import { Map, Toolbox } from "@/components/Map";
 
 /* Stores */
 import useMapStore from "@/store/mapStore";
@@ -15,6 +15,8 @@ export default function MapPage() {
     mapInitiateLayerGroups,
     mapZoomIn,
     mapZoomOut,
+    drawPolygon,
+    pinPoint,
   } = useMapStore();
 
   return (
@@ -26,14 +28,22 @@ export default function MapPage() {
         <div className="text-sm">Settings</div>
       </header>
       {/* Here is the map */}
-      <main className="flex-1 overflow-hidden">
+      <main className="h-[calc(100vh-56px)] relative overflow-hidden">
         <Map
           zoom={mapInitiateZoom}
           center={mapInitiateCenter}
           dataLayer={mapInitiateLayerGroups}
-          options={{}}
+          options={{ zoomControl: false, scaleBar: false, attribute: false }}
         >
-          <></>
+          <div className="absolute top-4 left-4 z-10">
+            <Toolbox
+              zoomIn={mapZoomIn}
+              zoomOut={mapZoomOut}
+              drawPolygon={drawPolygon}
+              pinPoint={pinPoint}
+              searchLocation={(loc) => console.log(loc)}
+            />
+          </div>
         </Map>
       </main>
       <footer className="flex justify-between px-2 py-1 bg-slate-100">

@@ -2,14 +2,24 @@
 import { create } from "zustand";
 
 /* Import from ol */
-import { Map } from "ol";
+import { Map, Feature } from "ol";
+import { Draw } from "ol/interaction";
+import { GeoJSON } from "ol/format";
+import { Vector as VectorSource } from "ol/source";
+import { Vector as VectorLayer } from "ol/layer";
 import { fromLonLat } from "ol/proj";
 
 /* Types */
 import { MapTypes, LayerTypes } from "../types";
+import { createInteractionDraw } from "@/components/Map/utilities/Interactions";
+import {
+  CreatePointStyle,
+  CreatePolygonStyle,
+  createVectorLayer,
+} from "@/components/Map/utilities/VectorLayer";
+import { addLayer } from "@/components/Map/utilities";
 
 /* Utils */
-import { createMap } from "@/lib/Map";
 
 /* Initial values for map */
 const mapInitZoom = 13;
@@ -94,6 +104,8 @@ interface MapStoreInterface {
   /* Map interaction functions */
   mapZoomIn: () => void;
   mapZoomOut: () => void;
+  drawPolygon: () => void;
+  pinPoint: () => void;
 }
 
 const useMapStore = create<MapStoreInterface>((set) => ({
@@ -134,6 +146,84 @@ const useMapStore = create<MapStoreInterface>((set) => ({
           zoom: zoom - 0.5,
           duration: 300,
         });
+      return state;
+    }),
+
+  /**
+   * Handling drawPolygon interaction
+   */
+  drawPolygon: () =>
+    set((state) => {
+      const groupName = "user-layers";
+      const polygonDraw = createInteractionDraw("Polygon");
+      polygonDraw.on("drawend", async (e) => {
+        const geom4326 = e.feature
+          ?.getGeometry()
+          ?.clone()
+          ?.transform("EPSG:3857", "EPSG:4326");
+        const polygon = new GeoJSON().writeFeature(
+          new Feature({ geometry: geom4326 })
+        );
+
+        const polygonGeojson = {
+          type: "FeatureCollection",
+          features: [JSON.parse(polygon)],
+        };
+        const polygonVectorLayer = createVectorLayer(
+          "Polygon",
+          polygonGeojson,
+          CreatePolygonStyle(),
+          {
+            name: "polygon",
+            title: "Polygon",
+            groupName: groupName,
+            zIndex: 10,
+            visible: true,
+          }
+        );
+        addLayer(state.mapObject, polygonVectorLayer, groupName);
+        state.mapObject.removeInteraction(polygonDraw);
+      });
+
+      state.mapObject.addInteraction(polygonDraw);
+      return state;
+    }),
+
+  pinPoint: () =>
+    set((state) => {
+      const groupName = "user-layers";
+      const pointDraw = createInteractionDraw("Point");
+
+      pointDraw.on("drawend", async (e) => {
+        const geom4326 = e.feature
+          ?.getGeometry()
+          ?.clone()
+          ?.transform("EPSG:3857", "EPSG:4326");
+        const point = new GeoJSON().writeFeature(
+          new Feature({ geometry: geom4326 })
+        );
+
+        const pointGeojson = {
+          type: "FeatureCollection",
+          features: [JSON.parse(point)],
+        };
+        const pointVectorLayer = createVectorLayer(
+          "Point",
+          pointGeojson,
+          CreatePointStyle(),
+          {
+            name: "point",
+            title: "Point",
+            groupName: groupName,
+            zIndex: 10,
+            visible: true,
+          }
+        );
+        addLayer(state.mapObject, pointVectorLayer, groupName);
+        state.mapObject.removeInteraction(pointDraw);
+      });
+
+      state.mapObject.addInteraction(pointDraw);
       return state;
     }),
 }));
