@@ -10,7 +10,7 @@ const authAPI = {
 };
 
 const searchAPI = {
-  base: "https://nominatim.openstreetmap.org",
+  base: "https://photon.komoot.io/api/",
   subRoutes: {
     search: "/search",
   },

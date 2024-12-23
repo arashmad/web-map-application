@@ -15,10 +15,7 @@ export async function searchAddressAction(
   format: string = "geojson"
 ): Promise<AddressPointFeatureCollection> {
   try {
-    const response = await fetch(
-      `${searchAPI.base}${searchAPI.subRoutes.search}?q=${address}&format=${format}`
-    );
-
+    const response = await fetch(`${searchAPI.base}?q=${address}`);
     if (response.status !== 200) {
       return {
         type: "FeatureCollection",
@@ -33,6 +30,7 @@ export async function searchAddressAction(
 
     return addresses;
   } catch (error) {
+    console.error(error);
     return {
       type: "FeatureCollection",
       features: [],
