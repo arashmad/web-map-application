@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { GeoJSON } from "ol/format";
+
+import { Button } from "@/components/ui/button";
+import { Minus, Plus, SquareDashed, MapPinPlus } from "lucide-react";
+import SearchBar from "../SearchBar/SearchBar";
 
 /**
  * Component Interface.
@@ -8,63 +12,52 @@ import { useState } from "react";
 interface IToolbox {
   zoomIn: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   zoomOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  toggleLayerList?: (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void;
-  downloadResults?: (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void;
+  drawPolygon: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  pinPoint: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  searchLocation: (places: GeoJSON | null) => void;
 }
 
 /**
  * Component Body.
  */
 const Toolbox: React.FC<IToolbox> = (props) => {
-  const { zoomIn, zoomOut, toggleLayerList, downloadResults } = props;
-
-  const [isLayerListOn, setIsLayerListOn] = useState(true);
-
-  const onToggleLayerList = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    setIsLayerListOn((prevState) => !prevState);
-    // toggleLayerList(e);
-  };
+  const { zoomIn, zoomOut, drawPolygon, pinPoint, searchLocation } = props;
 
   return (
-    <div className="d-flex flex-column justify-content-center p-1 bg-slate-100 rounded-lg">
-      {/* <IconButton
-        name="mdi-plus"
-        size="sm"
-        color="#000"
-        className="bg-[#ffb703]"
-        helper="zoom in"
+    <div className="flex flex-col gap-1">
+      <SearchBar />
+      <Button
+        size="icon"
+        title="Zoom In"
+        className="bg-slate-400 text-black"
         onClick={zoomIn}
-      />
-      <IconButton
-        name="mdi-minus"
-        size="sm"
-        color="#000"
-        className="bg-[#ffb703]"
-        helper="zoom out"
+      >
+        <Plus />
+      </Button>
+      <Button
+        size="icon"
+        title="Zoom Out"
+        className="bg-slate-400 text-black"
         onClick={zoomOut}
-      />
-      <IconButton
-        name={isLayerListOn ? "mdi-layers" : "mdi-layers-off"}
-        size="sm"
-        color="#000"
-        className="bg-[#ffb703]"
-        helper="Toggle layer list on/off"
-        onClick={onToggleLayerList}
-      />
-      <IconButton
-        name="mdi-download"
-        size="sm"
-        color="#000"
-        className="bg-[#ffb703]"
-        helper="Download results of current workspace"
-        onClick={downloadResults}
-      /> */}
+      >
+        <Minus />
+      </Button>
+      <Button
+        size="icon"
+        title="Draw Polygon"
+        className="bg-slate-400 text-black"
+        onClick={drawPolygon}
+      >
+        <SquareDashed />
+      </Button>
+      <Button
+        size="icon"
+        title="Pin Point"
+        className="bg-slate-400 text-black"
+        onClick={pinPoint}
+      >
+        <MapPinPlus />
+      </Button>
     </div>
   );
 };

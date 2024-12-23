@@ -9,4 +9,11 @@ const authAPI = {
   },
 };
 
-export { authAPI };
+const searchAPI = {
+  base: "https://photon.komoot.io/api/",
+  subRoutes: {
+    search: "/search",
+  },
+};
+
+export { authAPI, searchAPI };

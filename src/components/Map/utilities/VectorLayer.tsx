@@ -54,9 +54,9 @@ export const CreatePointStyle = (
  * @param {string} label Polygon label
  */
 export const CreatePolygonStyle = (
-  fillColor: string = "rgba(0, 0, 0, 0)",
+  fillColor: string = "rgba(0, 0, 0, 0.2)",
   borderSize: number = 1.5,
-  borderColor: string = "rgba(0, 0, 0, 0)",
+  borderColor: string = "rgba(0, 0, 0)",
   borderStyle: number[] = [],
   label?: string
 ): Style => {
@@ -128,9 +128,9 @@ export const createVectorLayer = (
     source: source,
     style: style,
     properties: {
-      id: properties.id,
-      label: properties.label,
-      groupId: properties.groupId,
+      name: properties.name,
+      title: properties.title,
+      groupName: properties.groupName,
     },
   });
 
