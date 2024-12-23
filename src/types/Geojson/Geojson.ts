@@ -8,7 +8,6 @@ const AddressPointFeatureSchema = z.object({
   type: z.literal("Feature"),
   geometry: GeometryPointSchema,
   properties: AddressPointPropertiesSchema,
-  bbox: z.optional(z.tuple([z.number(), z.number(), z.number(), z.number()])),
 });
 
 // FeatureCollection Schema

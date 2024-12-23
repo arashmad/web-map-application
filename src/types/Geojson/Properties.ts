@@ -1,16 +1,16 @@
 import { z } from "zod";
 
+// https://photon.komoot.io/
 const AddressPointPropertiesSchema = z.object({
-  place_id: z.number(),
   osm_type: z.string(),
   osm_id: z.number(),
-  place_rank: z.number(),
-  category: z.string(),
-  type: z.string(),
-  importance: z.number(),
-  addresstype: z.string(),
+  extent: z.optional(z.tuple([z.number(), z.number(), z.number(), z.number()])),
+  country: z.string(),
+  osm_key: z.string(),
+  countrycode: z.string(),
+  osm_value: z.string(),
   name: z.string(),
-  display_name: z.string(),
+  type: z.string(),
 });
 
 export { AddressPointPropertiesSchema };
