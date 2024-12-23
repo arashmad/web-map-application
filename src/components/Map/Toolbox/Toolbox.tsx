@@ -14,7 +14,7 @@ interface IToolbox {
   zoomOut: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   drawPolygon: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   pinPoint: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  searchLocation: (places: GeoJSON[] | []) => void;
+  searchLocation: (places: GeoJSON | null) => void;
 }
 
 /**
@@ -25,7 +25,7 @@ const Toolbox: React.FC<IToolbox> = (props) => {
 
   return (
     <div className="flex flex-col gap-1">
-      <SearchBar onSearchPlace={searchLocation} />
+      <SearchBar />
       <Button
         size="icon"
         title="Zoom In"

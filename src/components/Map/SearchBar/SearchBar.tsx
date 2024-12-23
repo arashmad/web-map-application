@@ -25,24 +25,36 @@ import {
 import { searchAddressAction } from "@/actions/search-actions";
 
 import { AddressPointFeatureCollection } from "@/types/Geojson/Geojson";
+import { features } from "process";
 
 /**
  * Component Body.
  */
 const SearchBar = () => {
-  const [addresses, setAddresses] = useState<AddressPointFeatureCollection>({
-    type: "FeatureCollection",
-    features: [],
-  });
+  const [addressList, setAddressList] = useState<
+    { label: string; value: string }[]
+  >([{ label: "", value: "" }]);
+  const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
 
   async function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    setIsLoading(true);
     const place = e.target.value;
     const result = await searchAddressAction(place);
-    console.log(result);
-    setAddresses(result);
-    // onSearchPlace(result);
+    const addresses = [
+      ...new Map(
+        result.features.map((item) => [item.properties.osm_id, item])
+      ).values(),
+    ].map((address) => {
+      return {
+        label: address.properties.name,
+        value: address.properties.osm_id.toString(),
+      };
+    });
+    console.log(addresses);
+    setAddressList(addresses);
+    setIsLoading(false);
   }
 
   return (
@@ -56,43 +68,43 @@ const SearchBar = () => {
             className="w-[200px] justify-between"
           >
             {value
-              ? addresses.features.find(
-                  (address) => address.properties.name.toString() === value
-                )?.properties.name
-              : "Go to"}
+              ? addressList.find((address) => address.value === value)?.label
+              : "Search for place"}
             <ChevronsUpDown className="opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="Select for place..."
               className="h-9"
               onChangeCapture={onChangeHandler}
             />
             <CommandList>
-              <CommandEmpty>Nothing to show</CommandEmpty>
+              {/* <CommandEmpty>Nothing to show</CommandEmpty> */}
               <CommandGroup>
-                {addresses.features.map((address) => (
-                  <CommandItem
-                    key={address.properties.place_id}
-                    value={address.properties.place_id.toString()}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      setOpen(false);
-                    }}
-                  >
-                    {address.properties.name}
-                    <Check
-                      className={cn(
-                        "ml-auto",
-                        value === address.properties.place_id.toString()
-                          ? "opacity-100"
-                          : "opacity-50"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
+                {!isLoading ? (
+                  addressList.map((address) => (
+                    <CommandItem
+                      key={address.value}
+                      value={address.value}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === address.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {address.label}
+                    </CommandItem>
+                  ))
+                ) : (
+                  <>Loading</>
+                )}
               </CommandGroup>
             </CommandList>
           </Command>
