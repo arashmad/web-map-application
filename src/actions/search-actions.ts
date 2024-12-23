@@ -1,29 +1,41 @@
 // Containing server actions for the search address
 "use server";
 
+/* API */
 import { searchAPI } from "./api";
 
 /* Types */
-import { GeoJSON } from "ol/format";
+import {
+  AddressPointFeatureCollection,
+  AddressPointFeatureCollectionSchema,
+} from "@/types/Geojson/Geojson";
 
 export async function searchAddressAction(
   address: string,
   format: string = "geojson"
-): Promise<GeoJSON[] | []> {
+): Promise<AddressPointFeatureCollection> {
   try {
     const response = await fetch(
-      `${searchAPI.base}${searchAPI.subRoutes.search}?q=${address}&format=${format}`,
-      {
-        method: "GET",
-      }
+      `${searchAPI.base}${searchAPI.subRoutes.search}?q=${address}&format=${format}`
     );
 
-    const data = response.json();
     if (response.status !== 200) {
-      return [];
+      return {
+        type: "FeatureCollection",
+        features: [],
+      };
     }
-    return data;
+
+    const data = await response.json();
+
+    // Response validation using zod
+    const addresses = AddressPointFeatureCollectionSchema.parse(data);
+
+    return addresses;
   } catch (error) {
-    return [];
+    return {
+      type: "FeatureCollection",
+      features: [],
+    };
   }
 }
