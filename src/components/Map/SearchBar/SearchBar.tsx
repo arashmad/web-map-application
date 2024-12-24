@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
@@ -23,9 +22,6 @@ import {
 
 /* Server Actions */
 import { searchAddressAction } from "@/actions/search-actions";
-
-import { AddressPointFeatureCollection } from "@/types/Geojson/Geojson";
-import { features } from "process";
 
 /**
  * Component Body.
