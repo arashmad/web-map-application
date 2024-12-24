@@ -81,9 +81,7 @@ const SigninForm: React.FC<{ authorized: (status: boolean) => void }> = ({
               <FormControl>
                 <Input placeholder="Email" {...field} />
               </FormControl>
-              <FormDescription>
-                Your email address. We'll never share it with anyone else.
-              </FormDescription>
+              <FormDescription>Your email address.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -97,9 +95,7 @@ const SigninForm: React.FC<{ authorized: (status: boolean) => void }> = ({
               <FormControl>
                 <Input placeholder="Password" {...field} />
               </FormControl>
-              <FormDescription>
-                Your password. We'll never share it with anyone else.
-              </FormDescription>
+              <FormDescription>Your password.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

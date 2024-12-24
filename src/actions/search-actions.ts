@@ -11,8 +11,7 @@ import {
 } from "@/types/Geojson/Geojson";
 
 export async function searchAddressAction(
-  address: string,
-  format: string = "geojson"
+  address: string
 ): Promise<AddressPointFeatureCollection> {
   try {
     const response = await fetch(`${searchAPI.base}?q=${address}`);
